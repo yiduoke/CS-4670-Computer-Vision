@@ -15,7 +15,6 @@ def read_image(image_path):
     Numpy array containing the image
   """
   np_array = np.asarray(PIL.Image.open(image_path))
-  print(np_array)
   return np_array
  
 img = read_image("example.png")
@@ -40,7 +39,10 @@ def display_image(image):
   Args:
     image: HxW Numpy array containing image to display.
   """
-  pass
+  plt.imshow(image)
+  plt.show()
+
+# display_image(img)
 
 
 def convert_to_grayscale(image):
@@ -52,8 +54,17 @@ def convert_to_grayscale(image):
   Returns:
     uint8-type Numpy array containing the image in grayscale
   """
-  pass
+  new_image = image[:,:,0] * 299/1000 + image[:,:,1] * 587/1000 + image[:,:,2] * 114/1000
+  return np.uint8(new_image)
+  #TODO: image seems inverted
 
+rainbow_img = read_image("rainbow.png")
+grey_rainbow = convert_to_grayscale(rainbow_img)
+write_image(grey_rainbow, "grey_rainbow.png")
+
+grey_PIL = Image.open('rainbow.png').convert('LA')
+grey_PIL.save('grey_PIL.png')
+#TODO: delete all tests later
 
 def convert_to_float(image):
   """Convert an image from 8-bit integer to 64-bit float format
@@ -63,8 +74,10 @@ def convert_to_float(image):
   Returns:
     Float-valued numpy array with values in [0, 1]
   """
-  pass
+  new_image = image / 255.0
+  return new_image
 
+convert_to_float(rainbow_img)
 
 def convolution(image, kernel):
   """Convolves image with kernel.
