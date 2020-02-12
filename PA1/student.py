@@ -16,13 +16,13 @@ def read_image(image_path):
   """
   np_array = np.asarray(PIL.Image.open(image_path))
   return np_array
- 
+
 img = read_image("example.png")
 
 
 def write_image(image, out_path):
   """Writes a numpy array as an image file.
-  
+
   Args:
     image: Numpy array containing image to write
     out_path: Path for the output image
@@ -54,7 +54,8 @@ def convert_to_grayscale(image):
   Returns:
     uint8-type Numpy array containing the image in grayscale
   """
-  new_image = image[:,:,0] * 299/1000 + image[:,:,1] * 587/1000 + image[:,:,2] * 114/1000
+  new_image = image[:,:,0] * 0.299 + image[:,:,1] * 0.587 + image[:,:,2] * 0.114
+  print(new_image)
   return np.uint8(new_image)
   #TODO: image seems inverted
 
@@ -115,7 +116,7 @@ def sobel_filter(image):
   G_x = [-1 0 1]      G_y = [-1 -2 -1]
         [-2 0 2]            [ 0  0  0]
         [-1 0 1]            [ 1  2  1]
-  
+
   After computing the two gradients, the image edges can be obtained by
   computing the gradient magnitude.
 
@@ -125,7 +126,7 @@ def sobel_filter(image):
     HxW Numpy array from applying the sobel filter to image
   """
   pass
- 
+
 
 def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
   """Detects image edges using the difference of gaussians algorithm
@@ -194,4 +195,3 @@ def visualize_dft():
   This function does not need to return anything.
   """
   pass
-
