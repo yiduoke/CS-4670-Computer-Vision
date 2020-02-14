@@ -149,7 +149,21 @@ def sobel_filter(image):
   Returns:
     HxW Numpy array from applying the sobel filter to image
   """
-  pass
+  G_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+  G_y = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+
+  G_x_grad = convolution(image, G_x)
+  G_y_grad = convolution(image, G_y)
+  x_mag = np.power(G_x_grad, 2)
+  y_mag = np.power(G_y_grad, 2)
+  return np.power((x_mag + y_mag), 0.5)
+  # return convolution(image, sobel)
+
+rose = read_image("rose.png")
+sobel_rose = sobel_filter(convert_to_grayscale(rose))
+write_image(sobel_rose, "sobel_rose.png")
+
+  
 
 
 def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
