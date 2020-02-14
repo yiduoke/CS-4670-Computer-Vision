@@ -253,8 +253,8 @@ def idft(ft_image):
         for y in range(N): #going down the columns of Fourier basis
             for m in range(M): # going down the rows of image
                 for n in range(N): #going down the columns of image
-                    real = B[x,y,m,n].real
-                    imag = -1 * B[x,y,m,n].imag
+                    real = B[x,y,m,n].real # cos(-x) = cos(x)
+                    imag = -1 * B[x,y,m,n].imag # sin(-x) = -sin(x)
                     combined = complex(real, imag)
                     f[x,y] += combined * ft_image[m,n]
     return f/M/N
