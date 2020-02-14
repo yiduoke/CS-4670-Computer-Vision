@@ -105,7 +105,11 @@ def gaussian_blur(image, ksize=3, sigma=1.0):
   Returns:
     The blurred image
   """
-  pass
+  # all dues to stackoverflow
+  kernel = np.fromfunction(lambda x, y: (1/(2*math.pi*sigma**2)) * math.e ** ((-1*((x-(ksize-1)/2)**2+(y-(ksize-1)/2)**2))/(2*sigma**2)), (ksize, ksize))
+  kernel /= np.sum(kernel)
+  return convolution(image, kernel)
+
 
 
 def sobel_filter(image):
