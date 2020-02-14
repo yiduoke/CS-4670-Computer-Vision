@@ -184,6 +184,31 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
 
 # example_dog = dog(img)
 # write_image(example_dog, "example_dog.png")
+def fourier_basis(image):
+  """Computes the discrete fourier transform of image
+
+  This function should return the same result as
+  np.fft.fftshift(np.fft.fft2(image)). You may assume that
+  image dimensions will always be even.
+
+  Args:
+    image: MXN numpy array, the grayscale image
+  Returns:
+    MXNXMXN complex Numpy array, the fourier basis image array
+  """
+  (M,N) = image.shape
+  B = np.zeros([M,N,M,N],dtype = complex)
+  for i_basis in range(0,M):
+      for j_basis in range(0,N):
+          k = i_basis - int(M/2)
+          l = j_basis - int(N/2)
+          for x in range(0,M):
+              for y in rane(0,N):
+                  rad = 2*math.pi*k*x/M+2*math.pi*l*y/N
+                  ele = complex(math.cos(rad),math.sin(rad))
+                  B[i_basis,j_basis,x,y] = ele
+  return B
+
 
 def dft(image):
   """Computes the discrete fourier transform of image
@@ -195,9 +220,20 @@ def dft(image):
   Args:
     image: HxW Numpy array, the grayscale image
   Returns:
-    NxW complex Numpy array, the fourier transform of the image
+    HxW complex Numpy array, the fourier transform of the image
   """
-  pass
+  B = fourier_basis(image)
+  (H,W) = image.shape
+  F = np.zeros([H,W],dtype=complex)
+  for i in range(0,H):
+      for j in range(0,W):
+          acc = 0
+          for i_img in range(0,H):
+              for j_img in range(0,W):
+                  acc = acc + image[i_img,j_img]*np.power(B[i,j,i_img,j_img],-1)
+          F[i,j] = acc
+
+  return F
 
 
 def idft(ft_image):
