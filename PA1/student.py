@@ -32,9 +32,7 @@ def write_image(image, out_path):
     img = img.convert("L")
   img.save(out_path)
 
-#write_image(img,"testing.png")
-
-
+#TODO: never tested display yet
 def display_image(image):
   """Displays a grayscale image using matplotlib.
 
@@ -43,8 +41,6 @@ def display_image(image):
   """
   plt.imshow(image)
   plt.show()
-
-# display_image(img)
 
 
 def convert_to_grayscale(image):
@@ -58,10 +54,8 @@ def convert_to_grayscale(image):
   """
   new_image = image[:,:,0] * 0.299 + image[:,:,1] * 0.587 + image[:,:,2] * 0.114
   return np.uint8(new_image)
-  #TODO: image seems inverted
 
-# rainbow_img = read_image("rainbow.png")
-# grey_rainbow = convert_to_grayscale(rainbow_img)
+
 # write_image(grey_rainbow, "grey_rainbow.png")
 
 #TODO: delete all tests later
@@ -157,7 +151,6 @@ def sobel_filter(image):
   x_mag = np.power(G_x_grad, 2)
   y_mag = np.power(G_y_grad, 2)
   return np.power((x_mag + y_mag), 0.5)
-  # return convolution(image, sobel)
 
 # rose = read_image("rose.png")
 # sobel_rose = sobel_filter(convert_to_grayscale(rose))
@@ -203,38 +196,57 @@ def fourier_basis(image):
           k = i_basis - int(M/2)
           l = j_basis - int(N/2)
           for x in range(0,M):
-              for y in rane(0,N):
-                  rad = 2*math.pi*k*x/M+2*math.pi*l*y/N
+              for y in range(0,N):
+                  rad = 2*np.pi*k*x/M+2*np.pi*l*y/N
                   ele = complex(math.cos(rad),math.sin(rad))
                   B[i_basis,j_basis,x,y] = ele
   return B
 
 
 def dft(image):
-  """Computes the discrete fourier transform of image
+    
+    """Computes the discrete fourier transform of image
 
-  This function should return the same result as
-  np.fft.fftshift(np.fft.fft2(image)). You may assume that
-  image dimensions will always be even.
+        This function should return the same result as
+        np.fft.fftshift(np.fft.fft2(image)). You may assume that
+        image dimensions will always be even.
 
-  Args:
-    image: HxW Numpy array, the grayscale image
-  Returns:
-    HxW complex Numpy array, the fourier transform of the image
-  """
-  B = fourier_basis(image)
-  (H,W) = image.shape
-  F = np.zeros([H,W],dtype=complex)
-  for i in range(0,H):
-      for j in range(0,W):
-          acc = 0
-          for i_img in range(0,H):
-              for j_img in range(0,W):
-                  acc = acc + image[i_img,j_img]*np.power(B[i,j,i_img,j_img],-1)
-          F[i,j] = acc
+        Args:
+        image: HxW Numpy array, the grayscale image
+        Returns:
+        HxW complex Numpy array, the fourier transform of the image
+    """
+    (M,N) = image.shape
+    B = fourier_basis(image)
+    F = np.zeros([M,N],dtype=complex)
 
-  return F
+    for x in range(M): # going down the rows of Fourier basis
+        for y in range(N): #going down the columns of Fourier basis
+            for m in range(M): # going down the rows of image
+                for n in range(N): #going down the columns of image
+                    rad = 2*np.pi*m*x/M + 2*np.pi*n*y/N
+                    F[x,y] += complex(image[m,n] * np.cos(rad), image[m,n] * np.sin(rad))
+#                    B[x,y,m,n] * image[m,n]
+    return F
+#    return np.fft.fft2(image)
 
+#    B = fourier_basis(image)
+#    (H,W) = image.shape
+#    F = np.zeros([H,W],dtype=complex)
+#    for i in range(0,H):
+#      for j in range(0,W):
+#          acc = 0
+#          for i_img in range(0,H):
+#              for j_img in range(0,W):
+#                  acc = acc + image[i_img,j_img]*np.power(B[i,j,i_img,j_img],-1)
+#          F[i,j] = acc
+#
+#    return F
+
+
+example_small = read_image("example_small.png")
+small_dft = dft(example_small)
+write_image(small_dft.real, "small_dft.png")
 
 def idft(ft_image):
   """Computes the inverse discrete fourier transform of ft_image.
@@ -267,8 +279,6 @@ def visualize_kernels():
   write_image(example_sf, "example_sobel_filter.png")
   example_dog = dog(img)
   write_image(example_dog, "example_dog.png")
-
-
 
 
 def visualize_dft():
