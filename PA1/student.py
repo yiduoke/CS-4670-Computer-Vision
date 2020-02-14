@@ -177,30 +177,32 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
 
 # example_dog = dog(img)
 # write_image(example_dog, "example_dog.png")
+
 def fourier_basis(image):
-  """Computes the discrete fourier transform of image
-
-  This function should return the same result as
-  np.fft.fftshift(np.fft.fft2(image)). You may assume that
-  image dimensions will always be even.
-
-  Args:
+    """Computes the discrete fourier transform of image
+        
+    This function should return the same result as
+    np.fft.fftshift(np.fft.fft2(image)). You may assume that
+    image dimensions will always be even.
+    
+    Args:
     image: MXN numpy array, the grayscale image
-  Returns:
+    Returns:
     MXNXMXN complex Numpy array, the fourier basis image array
-  """
-  (M,N) = image.shape
-  B = np.zeros([M,N,M,N],dtype = complex)
-  for i_basis in range(0,M):
-      for j_basis in range(0,N):
-          k = i_basis - int(M/2)
-          l = j_basis - int(N/2)
-          for x in range(0,M):
-              for y in range(0,N):
-                  rad = 2*np.pi*k*x/M+2*np.pi*l*y/N
-                  ele = complex(math.cos(rad),math.sin(rad))
-                  B[i_basis,j_basis,x,y] = ele
-  return B
+    """
+    (M,N) = image.shape
+    B = np.zeros([M,N,M,N],dtype = complex)
+    for i_basis in range(-1*M/2, M/2):
+        for j_basis in range(-1*N/2, N/2):
+            k = i_basis
+            l = j_basis
+            for x in range(0,M):
+                for y in range(0,N):
+                    rad = 2*np.pi*k*x/M+2*np.pi*l*y/N
+                    ele = complex(math.cos(rad),math.sin(rad))
+                    B[i_basis,j_basis,x,y] = ele
+    return B
+
 
 
 def dft(image):
@@ -224,25 +226,8 @@ def dft(image):
         for y in range(N): #going down the columns of Fourier basis
             for m in range(M): # going down the rows of image
                 for n in range(N): #going down the columns of image
-                    rad = 2*np.pi*m*x/M + 2*np.pi*n*y/N
-                    F[x,y] += complex(image[m,n] * np.cos(rad), image[m,n] * np.sin(rad))
-#                    B[x,y,m,n] * image[m,n]
+                    F[x,y] += B[x,y,m,n] * image[m,n]
     return F
-#    return np.fft.fft2(image)
-
-#    B = fourier_basis(image)
-#    (H,W) = image.shape
-#    F = np.zeros([H,W],dtype=complex)
-#    for i in range(0,H):
-#      for j in range(0,W):
-#          acc = 0
-#          for i_img in range(0,H):
-#              for j_img in range(0,W):
-#                  acc = acc + image[i_img,j_img]*np.power(B[i,j,i_img,j_img],-1)
-#          F[i,j] = acc
-#
-#    return F
-
 
 example_small = read_image("example_small.png")
 small_dft = dft(example_small)
