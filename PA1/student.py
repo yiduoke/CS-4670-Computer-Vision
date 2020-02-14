@@ -91,7 +91,27 @@ def convolution(image, kernel):
   Returns:
     image after performing convolution
   """
-  pass
+  (H,W) = image.shape
+  (h,w) = kernel.shape
+  h_half = (h-1)/2
+  w_half = (w-1)/2
+  padding_image = np.zeros([H+h-1, W+w-1])
+  padding_image[h_half:(H+h_half),w_half:(W+w_half)] = image
+  new_image = np.zeros(H,W)
+
+  for i in range(h_half,(H+h_half)):
+      i_new = i-h_half
+      for j in range(w_half,(W+w_half)):
+          j_new = j-w_half
+          acc = 0
+          for i_k in range(0,h):
+              for j_k in range(0,w):
+                  diff_i = i_k-h_half
+                  diff_j = j_k-w_half
+                  acc = acc + kernel[i_k,j_k]*padding_image[i-diff_i,j-diff_j]
+          new_image[i_new,j_new] = acc
+
+
 
 
 def gaussian_blur(image, ksize=3, sigma=1.0):
