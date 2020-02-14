@@ -17,7 +17,7 @@ def read_image(image_path):
   np_array = np.asarray(PIL.Image.open(image_path))
   return np_array
 
-img = read_image("example.png")
+#img = read_image("example.png")
 
 
 def write_image(image, out_path):
@@ -32,7 +32,7 @@ def write_image(image, out_path):
     img = img.convert("L")
   img.save(out_path)
 
-write_image(img,"testing.png")
+#write_image(img,"testing.png")
 
 
 def display_image(image):
@@ -60,9 +60,9 @@ def convert_to_grayscale(image):
   return np.uint8(new_image)
   #TODO: image seems inverted
 
-rainbow_img = read_image("rainbow.png")
-grey_rainbow = convert_to_grayscale(rainbow_img)
-write_image(grey_rainbow, "grey_rainbow.png")
+# rainbow_img = read_image("rainbow.png")
+# grey_rainbow = convert_to_grayscale(rainbow_img)
+# write_image(grey_rainbow, "grey_rainbow.png")
 
 #TODO: delete all tests later
 
@@ -90,8 +90,8 @@ def convolution(image, kernel):
   """
   (H,W) = image.shape
   (h,w) = kernel.shape
-  h_half = (h-1)/2
-  w_half = (w-1)/2
+  h_half = int((h-1)/2)
+  w_half = int((w-1)/2)
   padding_image = np.zeros([H+h-1, W+w-1])
   padding_image[h_half:(H+h_half),w_half:(W+w_half)] = image
   new_image = np.zeros((H,W))
@@ -128,8 +128,8 @@ def gaussian_blur(image, ksize=3, sigma=1.0):
   kernel /= np.sum(kernel)
   return convolution(image, kernel)
 
-blurred_rainbow = gaussian_blur(grey_rainbow, 5, 3)
-write_image(blurred_rainbow, "blurred_rainbow.png")
+# blurred_rainbow = gaussian_blur(grey_rainbow, 5, 3)
+# write_image(blurred_rainbow, "blurred_rainbow.png")
 
 
 def sobel_filter(image):
@@ -159,11 +159,11 @@ def sobel_filter(image):
   return np.power((x_mag + y_mag), 0.5)
   # return convolution(image, sobel)
 
-rose = read_image("rose.png")
-sobel_rose = sobel_filter(convert_to_grayscale(rose))
-write_image(sobel_rose, "sobel_rose.png")
+# rose = read_image("rose.png")
+# sobel_rose = sobel_filter(convert_to_grayscale(rose))
+# write_image(sobel_rose, "sobel_rose.png")
 
-  
+
 
 
 def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
@@ -182,8 +182,8 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
   convolved2 = gaussian_blur(image, ksize2, sigma2)
   return convolved1 - convolved2
 
-example_dog = dog(img)
-write_image(example_dog, "example_dog.png")
+# example_dog = dog(img)
+# write_image(example_dog, "example_dog.png")
 
 def dft(image):
   """Computes the discrete fourier transform of image
@@ -224,7 +224,15 @@ def visualize_kernels():
   visualize the result and save it as example_{function_name}.png e.g. example_dog.png.
   This function does not need to return anything.
   """
-  pass
+  img = read_image("example.png")
+  example_gb = gaussian_blur(img)
+  write_image(example_gb, "example_gaussian_blur.png")
+  example_sf = sobel_filter(img)
+  write_image(example_sf, "example_sobel_filter.png")
+  example_dog = dog(img)
+  write_image(example_dog, "example_dog.png")
+
+
 
 
 def visualize_dft():
