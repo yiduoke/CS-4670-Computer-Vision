@@ -178,8 +178,12 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
   Returns:
     HxW Numpy array from applying difference of gaussians to image
   """
-  pass
+  convolved1 = gaussian_blur(image, ksize1, sigma1)
+  convolved2 = gaussian_blur(image, ksize2, sigma2)
+  return convolved1 - convolved2
 
+example_dog = dog(img)
+write_image(example_dog, "example_dog.png")
 
 def dft(image):
   """Computes the discrete fourier transform of image
