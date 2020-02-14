@@ -28,6 +28,8 @@ def write_image(image, out_path):
     out_path: Path for the output image
   """
   img = Image.fromarray(image)
+  if (len(image.shape) < 3):
+    img = img.convert("L")
   img.save(out_path)
 
 write_image(img,"testing.png")
@@ -55,7 +57,6 @@ def convert_to_grayscale(image):
     uint8-type Numpy array containing the image in grayscale
   """
   new_image = image[:,:,0] * 0.299 + image[:,:,1] * 0.587 + image[:,:,2] * 0.114
-  print(new_image)
   return np.uint8(new_image)
   #TODO: image seems inverted
 
@@ -63,8 +64,6 @@ rainbow_img = read_image("rainbow.png")
 grey_rainbow = convert_to_grayscale(rainbow_img)
 write_image(grey_rainbow, "grey_rainbow.png")
 
-grey_PIL = Image.open('rainbow.png').convert('LA')
-grey_PIL.save('grey_PIL.png')
 #TODO: delete all tests later
 
 def convert_to_float(image):
@@ -77,8 +76,6 @@ def convert_to_float(image):
   """
   new_image = image / 255.0
   return new_image
-
-convert_to_float(rainbow_img)
 
 def convolution(image, kernel):
   """Convolves image with kernel.
@@ -97,7 +94,7 @@ def convolution(image, kernel):
   w_half = (w-1)/2
   padding_image = np.zeros([H+h-1, W+w-1])
   padding_image[h_half:(H+h_half),w_half:(W+w_half)] = image
-  new_image = np.zeros(H,W)
+  new_image = np.zeros((H,W))
 
   for i in range(h_half,(H+h_half)):
       i_new = i-h_half
@@ -110,6 +107,7 @@ def convolution(image, kernel):
                   diff_j = j_k-w_half
                   acc = acc + kernel[i_k,j_k]*padding_image[i-diff_i,j-diff_j]
           new_image[i_new,j_new] = acc
+  return new_image
 
 
 
@@ -130,6 +128,8 @@ def gaussian_blur(image, ksize=3, sigma=1.0):
   kernel /= np.sum(kernel)
   return convolution(image, kernel)
 
+blurred_rainbow = gaussian_blur(grey_rainbow, 5, 3)
+write_image(blurred_rainbow, "blurred_rainbow.png")
 
 
 def sobel_filter(image):
