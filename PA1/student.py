@@ -203,8 +203,6 @@ def fourier_basis(image):
                     B[i_basis,j_basis,x,y] = ele
     return B
 
-
-
 def dft(image):
     
     """Computes the discrete fourier transform of image
@@ -234,20 +232,35 @@ small_dft = dft(example_small)
 write_image(small_dft.real, "small_dft.png")
 
 def idft(ft_image):
-  """Computes the inverse discrete fourier transform of ft_image.
+    
+    """Computes the inverse discrete fourier transform of ft_image.
 
-  For this assignment, the complex component of the output should be ignored.
-  The returned array should NOT be complex. The real component should be
-  the same result as np.fft.ifft2(np.fft.ifftshift(ft_image)). You
-  may assume that image dimensions will always be even.
+        For this assignment, the complex component of the output should be ignored.
+        The returned array should NOT be complex. The real component should be
+        the same result as np.fft.ifft2(np.fft.ifftshift(ft_image)). You
+        may assume that image dimensions will always be even.
 
-  Args:
-    ft_image: HxW complex Numpy array, a fourier image
-  Returns:
-    NxW float Numpy array, the inverse fourier transform
-  """
-  pass
+        Args:
+        ft_image: HxW complex Numpy array, a fourier image
+        Returns:
+        NxW float Numpy array, the inverse fourier transform
+    """
+    (M,N) = ft_image.shape
+    B = fourier_basis(ft_image)
+    f = np.zeros([M,N],dtype=complex)
 
+    for x in range(M): # going down the rows of Fourier basis
+        for y in range(N): #going down the columns of Fourier basis
+            for m in range(M): # going down the rows of image
+                for n in range(N): #going down the columns of image
+                    real = B[x,y,m,n].real
+                    imag = -1 * B[x,y,m,n].imag
+                    combined = complex(real, imag)
+                    f[x,y] += combined * ft_image[m,n]
+    return f/M/N
+
+small_back = idft(small_dft)
+write_image(small_back.real, "small_back.png")
 
 def visualize_kernels():
   """Visualizes your implemented kernels.
