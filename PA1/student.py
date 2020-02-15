@@ -272,7 +272,6 @@ def visualize_dft():
     (M,N) = img.shape
     
     # padding the image with 0's then Fourier transforming it
-#    f_hat = np.pad(img,((1,1),(1,1)),'constant',constant_values = 0)
     f_hat = np.pad(img,((0,2),(0,2)),'constant',constant_values = 0)
     F_hat = dft(f_hat)
 
@@ -283,7 +282,6 @@ def visualize_dft():
     gaussian_kernel /= np.sum(gaussian_kernel)
     
     # padding the kernel with 0's then Fourier transforming it
-#    w_hat = np.pad(gaussian_kernel, (( (M-1)/2,(M-0)/2 ), ( (N-1)/2,(N-0)/2) ),'constant',constant_values = 0)
     w_hat = np.pad(gaussian_kernel, (( 0, M-1 ), ( 0, N-1) ),'constant',constant_values = 0)
     W_hat = dft(w_hat)
     
