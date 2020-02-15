@@ -258,6 +258,7 @@ def visualize_kernels():
   example_dog = dog(img)
   write_image(example_dog, "example_dog.png")
 
+
 def visualize_dft():
     """Visualizes the discrete fourier transform.
 
@@ -270,15 +271,19 @@ def visualize_dft():
     img = read_image("example_small.png")
     (M,N) = img.shape
     
+    # padding the image with 0's then Fourier transforming it
     f_hat = np.pad(img,((1,1),(1,1)),'constant',constant_values = 0)
     F_hat = dft(f_hat)
 
-    ksize = 4
+    # making a Gaussian kernel of size 3
+    ksize = 3
     sigma = 1.0
     gaussian_kernel = np.fromfunction(lambda x, y: (1/(2*math.pi*sigma**2)) * math.e ** ((-1*((x-(ksize-1)/2)**2+(y-(ksize-1)/2)**2))/(2*sigma**2)), (ksize, ksize))
     gaussian_kernel /= np.sum(gaussian_kernel)
     
-    w_hat = np.pad(gaussian_kernel, (( (M-2)/2,(M-2)/2 ), ( (N-2)/2,(N-2)/2) ),'constant',constant_values = 0)
+    # padding the kernel with 0's then Fourier transforming it
+#    w_hat = np.pad(gaussian_kernel, (( (M-1)/2,(M-0)/2 ), ( (N-1)/2,(N-0)/2) ),'constant',constant_values = 0)
+    w_hat = np.pad(gaussian_kernel, (( 0, M-1 ), ( 0, N-1) ),'constant',constant_values = 0)
     W_hat = dft(w_hat)
     
     example_blurry = idft(np.multiply(F_hat, W_hat))
