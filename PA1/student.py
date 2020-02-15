@@ -17,9 +17,6 @@ def read_image(image_path):
   np_array = np.asarray(PIL.Image.open(image_path))
   return np_array
 
-#img = read_image("example.png")
-
-
 def write_image(image, out_path):
   """Writes a numpy array as an image file.
 
@@ -55,10 +52,6 @@ def convert_to_grayscale(image):
   new_image = image[:,:,0] * 0.299 + image[:,:,1] * 0.587 + image[:,:,2] * 0.114
   return np.uint8(new_image)
 
-
-# write_image(grey_rainbow, "grey_rainbow.png")
-
-#TODO: delete all tests later
 
 def convert_to_float(image):
   """Convert an image from 8-bit integer to 64-bit float format
@@ -122,9 +115,6 @@ def gaussian_blur(image, ksize=3, sigma=1.0):
   kernel /= np.sum(kernel)
   return convolution(image, kernel)
 
-# blurred_rainbow = gaussian_blur(grey_rainbow, 5, 3)
-# write_image(blurred_rainbow, "blurred_rainbow.png")
-
 
 def sobel_filter(image):
   """Detects image edges using the sobel filter.
@@ -152,12 +142,6 @@ def sobel_filter(image):
   y_mag = np.power(G_y_grad, 2)
   return np.power((x_mag + y_mag), 0.5)
 
-# rose = read_image("rose.png")
-# sobel_rose = sobel_filter(convert_to_grayscale(rose))
-# write_image(sobel_rose, "sobel_rose.png")
-
-
-
 
 def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
   """Detects image edges using the difference of gaussians algorithm
@@ -175,8 +159,6 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
   convolved2 = gaussian_blur(image, ksize2, sigma2)
   return convolved1 - convolved2
 
-# example_dog = dog(img)
-# write_image(example_dog, "example_dog.png")
 
 def fourier_basis(image):
     """Computes the discrete fourier transform of image
@@ -234,11 +216,6 @@ write_image(small_dft.real, "small_dft.png")
 small_dft_lib = np.fft.fftshift(np.fft.fft2(example_small))
 write_image(small_dft_lib.real, "small_dft_lib.png")
 
-#if (fourier_basis(example_small) == np.fft.fftshift(np.fft.fft2(example_small))):
-#    print ("basis is correct")
-#else:
-#    print ("basis is wrong")
-
 def idft(ft_image):
     
     """Computes the inverse discrete fourier transform of ft_image.
@@ -267,10 +244,6 @@ def idft(ft_image):
                     f[m,n] += combined * ft_image[x,y]
     return f/M/N
 
-small_back = idft(small_dft)
-write_image(small_back.real, "small_back.png")
-write_image(np.fft.ifft2(np.fft.ifftshift(small_dft_lib)).real, "small_back_lib.png")
-
 def visualize_kernels():
   """Visualizes your implemented kernels.
 
@@ -287,14 +260,28 @@ def visualize_kernels():
   example_dog = dog(img)
   write_image(example_dog, "example_dog.png")
 
+visualize_kernels()
 
 def visualize_dft():
-  """Visualizes the discrete fourier transform.
+    """Visualizes the discrete fourier transform.
 
-  This function should read example.png, convert it to grayscale and float-type,
-  and run dft on it. Try masking out parts of the fourier transform image and
-  recovering the original image using idft. Can you create a blurry version
-  of the original image? Visualize the blurry image and save it as example_blurry.png.
-  This function does not need to return anything.
-  """
-  pass
+        This function should read example.png, convert it to grayscale and float-type,
+        and run dft on it. Try masking out parts of the fourier transform image and
+        recovering the original image using idft. Can you create a blurry version
+        of the original image? Visualize the blurry image and save it as example_blurry.png.
+        This function does not need to return anything.
+    """
+    img = read_image("example_small.png")
+    (M,N) = img.shape
+    example_dft = dft(img)
+    masked_dft_real = gaussian_blur(example_dft.real)
+    masked_dft_imag = gaussian_blur(example_dft.imag)
+    masked_dft = np.zeros((M,N), dtype = complex)
+    for m in range(M):
+        for n in range(N):
+            masked_dft[m,n] = complex(masked_dft_real[m,n], masked_dft_imag[m,n])
+
+    example_blurry = idft(masked_dft)
+    write_image(example_blurry.real, "example_blurry.png")
+
+visualize_dft()
