@@ -272,7 +272,8 @@ def visualize_dft():
     (M,N) = img.shape
     
     # padding the image with 0's then Fourier transforming it
-    f_hat = np.pad(img,((1,1),(1,1)),'constant',constant_values = 0)
+#    f_hat = np.pad(img,((1,1),(1,1)),'constant',constant_values = 0)
+    f_hat = np.pad(img,((0,2),(0,2)),'constant',constant_values = 0)
     F_hat = dft(f_hat)
 
     # making a Gaussian kernel of size 3
