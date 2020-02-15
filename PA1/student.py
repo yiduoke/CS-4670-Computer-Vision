@@ -161,16 +161,14 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
 
 
 def fourier_basis(image):
-    """Computes the discrete fourier transform of image
+    """Computes the discrete fourier basis of image
         
-    This function should return the same result as
-    np.fft.fftshift(np.fft.fft2(image)). You may assume that
-    image dimensions will always be even.
+    We assume that image dimensions will always be even.
     
     Args:
     image: MXN numpy array, the grayscale image
     Returns:
-    MXNXMXN complex Numpy array, the fourier basis image array
+    MXNXMXN complex Numpy array, the fourier basis array
     """
     (M,N) = image.shape
     B = np.zeros([M,N,M,N],dtype = complex)
@@ -286,3 +284,4 @@ def visualize_dft():
     example_blurry = idft(np.multiply(F_hat, W_hat))
     write_image(example_blurry.real, "example_blurry.png")
 
+visualize_dft()
