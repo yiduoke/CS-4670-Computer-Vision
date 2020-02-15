@@ -286,4 +286,3 @@ def visualize_dft():
     example_blurry = idft(np.multiply(F_hat, W_hat))
     write_image(example_blurry.real, "example_blurry.png")
 
-visualize_dft()
