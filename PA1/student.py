@@ -192,16 +192,17 @@ def fourier_basis(image):
     """
     (M,N) = image.shape
     B = np.zeros([M,N,M,N],dtype = complex)
-    for i_basis in range(-1*M/2, M/2):
-        for j_basis in range(-1*N/2, N/2):
-            k = i_basis
-            l = j_basis
+    for i_basis in range(0, M):
+        for j_basis in range(0, N):
+            k = i_basis - M/2
+            l = j_basis - N/2
             for x in range(0,M):
                 for y in range(0,N):
                     rad = 2*np.pi*k*x/M+2*np.pi*l*y/N
-                    ele = complex(math.cos(rad),math.sin(rad))
+                    ele = complex(math.cos(rad),math.sin(-1 * rad))
                     B[i_basis,j_basis,x,y] = ele
     return B
+
 
 def dft(image):
     
@@ -230,6 +231,13 @@ def dft(image):
 example_small = read_image("example_small.png")
 small_dft = dft(example_small)
 write_image(small_dft.real, "small_dft.png")
+small_dft_lib = np.fft.fftshift(np.fft.fft2(example_small))
+write_image(small_dft_lib.real, "small_dft_lib.png")
+
+#if (fourier_basis(example_small) == np.fft.fftshift(np.fft.fft2(example_small))):
+#    print ("basis is correct")
+#else:
+#    print ("basis is wrong")
 
 def idft(ft_image):
     
@@ -256,11 +264,12 @@ def idft(ft_image):
                     real = B[x,y,m,n].real # cos(-x) = cos(x)
                     imag = -1 * B[x,y,m,n].imag # sin(-x) = -sin(x)
                     combined = complex(real, imag)
-                    f[x,y] += combined * ft_image[m,n]
+                    f[m,n] += combined * ft_image[x,y]
     return f/M/N
 
 small_back = idft(small_dft)
 write_image(small_back.real, "small_back.png")
+write_image(np.fft.ifft2(np.fft.ifftshift(small_dft_lib)).real, "small_back_lib.png")
 
 def visualize_kernels():
   """Visualizes your implemented kernels.
