@@ -260,8 +260,6 @@ def visualize_kernels():
   example_dog = dog(img)
   write_image(example_dog, "example_dog.png")
 
-visualize_kernels()
-
 def visualize_dft():
     """Visualizes the discrete fourier transform.
 
@@ -273,15 +271,19 @@ def visualize_dft():
     """
     img = read_image("example_small.png")
     (M,N) = img.shape
-    example_dft = dft(img)
-    masked_dft_real = gaussian_blur(example_dft.real)
-    masked_dft_imag = gaussian_blur(example_dft.imag)
-    masked_dft = np.zeros((M,N), dtype = complex)
-    for m in range(M):
-        for n in range(N):
-            masked_dft[m,n] = complex(masked_dft_real[m,n], masked_dft_imag[m,n])
+    
+    f_hat = np.pad(img,((1,1),(1,1)),'constant',constant_values = 0)
+    F_hat = dft(f_hat)
 
-    example_blurry = idft(masked_dft)
+    ksize = 4
+    sigma = 1.0
+    gaussian_kernel = np.fromfunction(lambda x, y: (1/(2*math.pi*sigma**2)) * math.e ** ((-1*((x-(ksize-1)/2)**2+(y-(ksize-1)/2)**2))/(2*sigma**2)), (ksize, ksize))
+    gaussian_kernel /= np.sum(gaussian_kernel)
+    
+    w_hat = np.pad(gaussian_kernel, (( (M-2)/2,(M-2)/2 ), ( (N-2)/2,(N-2)/2) ),'constant',constant_values = 0)
+    W_hat = dft(w_hat)
+    
+    example_blurry = idft(np.multiply(F_hat, W_hat))
     write_image(example_blurry.real, "example_blurry.png")
 
 visualize_dft()
