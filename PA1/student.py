@@ -30,16 +30,6 @@ def write_image(image, out_path):
   img.save(out_path)
 
 
-def display_image(image):
-  """Displays a grayscale image using matplotlib.
-
-  Args:
-    image: HxW Numpy array containing image to display.
-  """
-  plt.imshow(image)
-  plt.show()
-
-
 def convert_to_grayscale(image):
   """Convert an RGB image to grayscale.
 
@@ -63,6 +53,17 @@ def convert_to_float(image):
   """
   new_image = image / 255.0
   return new_image
+
+def display_image(image):
+    
+    """Displays a grayscale image using matplotlib.
+        
+        Args:
+        image: HxW Numpy array containing image to display.
+    """
+    plt.imshow(image, cmap = "gray")
+    plt.show()
+
 
 def convolution(image, kernel):
   """Convolves image with kernel.
@@ -282,6 +283,3 @@ def visualize_dft():
     
     example_blurry = idft(np.multiply(F_hat, W_hat))
     write_image(example_blurry.real, "example_blurry.png")
-
-visualize_kernels()
-visualize_dft()
