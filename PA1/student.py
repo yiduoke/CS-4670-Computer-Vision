@@ -29,7 +29,7 @@ def write_image(image, out_path):
     img = img.convert("L")
   img.save(out_path)
 
-#TODO: never tested display yet
+
 def display_image(image):
   """Displays a grayscale image using matplotlib.
 
@@ -208,11 +208,6 @@ def dft(image):
                     F[x,y] += B[x,y,m,n] * image[m,n]
     return F
 
-example_small = read_image("example_small.png")
-small_dft = dft(example_small)
-write_image(small_dft.real, "small_dft.png")
-small_dft_lib = np.fft.fftshift(np.fft.fft2(example_small))
-write_image(small_dft_lib.real, "small_dft_lib.png")
 
 def idft(ft_image):
     
@@ -288,4 +283,5 @@ def visualize_dft():
     example_blurry = idft(np.multiply(F_hat, W_hat))
     write_image(example_blurry.real, "example_blurry.png")
 
+visualize_kernels()
 visualize_dft()
