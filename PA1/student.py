@@ -239,21 +239,20 @@ def idft(ft_image):
     return f/M/N
 
 def visualize_kernels():
-  """Visualizes your implemented kernels.
-
-  This function should read example.png, convert it to grayscale and float-type,
-  and run the functions gaussian_blur, sobel_filter, and dog over it. For each function,
-  visualize the result and save it as example_{function_name}.png e.g. example_dog.png.
-  This function does not need to return anything.
-  """
-  img = read_image("example.png")
-  example_gb = gaussian_blur(img)
-  write_image(example_gb, "example_gaussian_blur.png")
-  example_sf = sobel_filter(img)
-  write_image(example_sf, "example_sobel_filter.png")
-  example_dog = dog(img)
-  write_image(example_dog, "example_dog.png")
-
+    """Visualizes your implemented kernels.
+        
+        This function should read example.png, convert it to grayscale and float-type,
+        and run the functions gaussian_blur, sobel_filter, and dog over it. For each function,
+        visualize the result and save it as example_{function_name}.png e.g. example_dog.png.
+        This function does not need to return anything.
+    """
+    img = read_image("example.png")
+    example_gb = gaussian_blur(img)
+    write_image(example_gb, "example_gaussian_blur.png")
+    example_sf = sobel_filter(img)
+    write_image(example_sf, "example_sobel_filter.png")
+    example_dog = dog(img)
+    write_image(example_dog, "example_dog.png")
 
 def visualize_dft():
     """Visualizes the discrete fourier transform.
@@ -282,4 +281,7 @@ def visualize_dft():
     W_hat = dft(w_hat)
     
     example_blurry = idft(np.multiply(F_hat, W_hat))
+    example_blurry = example_blurry[1:M+1, 1:N+1] #slicing it to give the correct dimensions
     write_image(example_blurry.real, "example_blurry.png")
+
+visualize_dft()
