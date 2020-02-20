@@ -14,7 +14,9 @@ def read_image(image_path):
   Returns:
     Numpy array containing the image
   """
-  np_array = np.asarray(PIL.Image.open(image_path))
+  img = PIL.Image.open(image_path)
+  img = img.convert('RGB')
+  np_array = np.asarray(img)
   return np_array
 
 def write_image(image, out_path):
@@ -28,6 +30,7 @@ def write_image(image, out_path):
   if (len(image.shape) < 3):
     img = img.convert("L")
   img.save(out_path)
+
 
 
 def convert_to_grayscale(image):
@@ -55,9 +58,9 @@ def convert_to_float(image):
   return new_image
 
 def display_image(image):
-    
+
     """Displays a grayscale image using matplotlib.
-        
+
         Args:
         image: HxW Numpy array containing image to display.
     """
@@ -163,9 +166,9 @@ def dog(image, ksize1=5, sigma1=1.0, ksize2=9, sigma2=2.0):
 
 def fourier_basis(image):
     """Computes the discrete fourier basis of image
-        
+
     We assume that image dimensions will always be even.
-    
+
     Args:
     image: MXN numpy array, the grayscale image
     Returns:
@@ -186,7 +189,7 @@ def fourier_basis(image):
 
 
 def dft(image):
-    
+
     """Computes the discrete fourier transform of image
 
         This function should return the same result as
@@ -211,7 +214,7 @@ def dft(image):
 
 
 def idft(ft_image):
-    
+
     """Computes the inverse discrete fourier transform of ft_image.
 
         For this assignment, the complex component of the output should be ignored.
@@ -240,20 +243,21 @@ def idft(ft_image):
 
 def visualize_kernels():
     """Visualizes your implemented kernels.
-        
+
         This function should read example.png, convert it to grayscale and float-type,
         and run the functions gaussian_blur, sobel_filter, and dog over it. For each function,
         visualize the result and save it as example_{function_name}.png e.g. example_dog.png.
         This function does not need to return anything.
     """
     img = read_image("example.png")
+    img = convert_to_float(convert_to_grayscale(img))
     example_gb = gaussian_blur(img)
     write_image(example_gb, "example_gaussian_blur.png")
     example_sf = sobel_filter(img)
     write_image(example_sf, "example_sobel_filter.png")
     example_dog = dog(img)
     write_image(example_dog, "example_dog.png")
-
+visualize_kernels()
 def visualize_dft():
     """Visualizes the discrete fourier transform.
 
@@ -265,7 +269,7 @@ def visualize_dft():
     """
     img = read_image("example_small.png")
     (M,N) = img.shape
-    
+
     # padding the image with 0's then Fourier transforming it
     f_hat = np.pad(img,((0,2),(0,2)),'constant',constant_values = 0)
     F_hat = dft(f_hat)
@@ -275,13 +279,13 @@ def visualize_dft():
     sigma = 1.0
     gaussian_kernel = np.fromfunction(lambda x, y: (1/(2*math.pi*sigma**2)) * math.e ** ((-1*((x-(ksize-1)/2)**2+(y-(ksize-1)/2)**2))/(2*sigma**2)), (ksize, ksize))
     gaussian_kernel /= np.sum(gaussian_kernel)
-    
+
     # padding the kernel with 0's then Fourier transforming it
     w_hat = np.pad(gaussian_kernel, (( 0, M-1 ), ( 0, N-1) ),'constant',constant_values = 0)
     W_hat = dft(w_hat)
-    
+
     example_blurry = idft(np.multiply(F_hat, W_hat))
     example_blurry = example_blurry[1:M+1, 1:N+1] #slicing it to give the correct dimensions
     write_image(example_blurry.real, "example_blurry.png")
 
-visualize_dft()
+# visualize_dft()
