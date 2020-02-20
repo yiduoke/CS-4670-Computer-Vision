@@ -15,8 +15,9 @@ def read_image(image_path):
     Numpy array containing the image
   """
   img = PIL.Image.open(image_path)
-  img = img.convert('RGB')
   np_array = np.asarray(img)
+  if (len(np_array.shape)<3):
+      np_array = np.dstack((np_array,np_array,np_array))
   return np_array
 
 def write_image(image, out_path):
@@ -241,6 +242,27 @@ def idft(ft_image):
                     f[m,n] += combined * ft_image[x,y]
     return f/M/N
 
+def scale(image_array):
+    """Scale the image_array from [min, max] to [0, 255]
+    """
+    up_lim = 255
+    low_lim = 0
+    max = np.amax(image_array)
+    min = np.amin(image_array)
+    (H,W) = image_array.shape
+    new_image = np.zeros((H,W))
+    new_image = (image_array[:,:]-min)*(up_lim-low_lim)/(max-min) + low_lim
+    for i in range(H):
+        for j in range(W):
+            if new_image[i,j] < 0:
+                new_image[i,j] = 0
+            if new_image[i,j] > 255:
+                new_image[i,j] = 255
+
+    new_image = np.uint8(new_image)
+    return new_image
+
+
 def visualize_kernels():
     """Visualizes your implemented kernels.
 
@@ -251,13 +273,13 @@ def visualize_kernels():
     """
     img = read_image("example.png")
     img = convert_to_float(convert_to_grayscale(img))
-    example_gb = gaussian_blur(img)
+    example_gb = scale(gaussian_blur(img))
     write_image(example_gb, "example_gaussian_blur.png")
-    example_sf = sobel_filter(img)
+    example_sf = scale(sobel_filter(img))
     write_image(example_sf, "example_sobel_filter.png")
-    example_dog = dog(img)
+    example_dog = scale(dog(img))
     write_image(example_dog, "example_dog.png")
-visualize_kernels()
+
 def visualize_dft():
     """Visualizes the discrete fourier transform.
 
@@ -268,6 +290,7 @@ def visualize_dft():
         This function does not need to return anything.
     """
     img = read_image("example_small.png")
+    img = convert_to_float(convert_to_grayscale(img))
     (M,N) = img.shape
 
     # padding the image with 0's then Fourier transforming it
@@ -286,6 +309,4 @@ def visualize_dft():
 
     example_blurry = idft(np.multiply(F_hat, W_hat))
     example_blurry = example_blurry[1:M+1, 1:N+1] #slicing it to give the correct dimensions
-    write_image(example_blurry.real, "example_blurry.png")
-
-# visualize_dft()
+    write_image(scale(example_blurry.real), "example_blurry.png")
